@@ -1,0 +1,8 @@
+1. Created an owner, shop, assigned staff member, and customer.
+2. Invoice 100.00 - staff-recorded payment 40.00 = outstanding 60.00.
+3. Payment above the outstanding balance was rejected (HTTP 400).
+4. Corrected invoice to 120.00: original + linked reversal + replacement retained; balance 80.00.
+5. A second reversal of the same entry was rejected (HTTP 409).
+6. Archived staff: their token stopped working (HTTP 401); payment and balance remained intact.
+7. Archived customer: history still readable; new transactions rejected (HTTP 409).
+PASS: financial history, correction lineage, permissions, and archival verified over HTTP.

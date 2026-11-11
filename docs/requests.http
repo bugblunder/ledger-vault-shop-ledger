@@ -1,0 +1,63 @@
+# VS Code REST Client / JetBrains HTTP Client examples.
+# Substitute IDs and obtain credentials from your local .env; never commit actual tokens.
+@base = http://localhost:8080
+@token = paste-your-owner-token-here
+@customerId = 1
+@entryId = 1
+@staffId = 1
+
+### Sign in (use an owner account for ledger operations)
+POST {{base}}/api/auth/signin
+Content-Type: application/json
+
+{"username":"your-owner-username","password":"your-local-password"}
+
+### Record an invoice
+POST {{base}}/api/customers/{{customerId}}/ledger-entries
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"entryType":"DEBIT","amount":100.00,"description":"Invoice 001"}
+
+### Record a payment
+POST {{base}}/api/customers/{{customerId}}/ledger-entries
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"entryType":"CREDIT","amount":40.00,"description":"Receipt 001"}
+
+### Correct an invoice without overwriting it (owner/manager)
+POST {{base}}/api/customers/ledger-entries/{{entryId}}/corrections
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"replacement":{"entryType":"DEBIT","amount":120.00,"description":"Corrected invoice 001"},"reason":"Missing item found during receipt review"}
+
+### Reverse an entry (owner/manager; only if balance remains nonnegative)
+POST {{base}}/api/customers/ledger-entries/{{entryId}}/reversals
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"reason":"Duplicate invoice confirmed"}
+
+### Read history, including originals and correction links
+GET {{base}}/api/customers/{{customerId}}/ledger-entries
+Authorization: Bearer {{token}}
+
+### Read balance
+GET {{base}}/api/customers/{{customerId}}/balance
+Authorization: Bearer {{token}}
+
+### Archive staff while preserving their transactions (owner)
+POST {{base}}/api/owner/staff/{{staffId}}/archive
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"reason":"Staff member left the shop"}
+
+### Archive customer while preserving history (owner/manager)
+POST {{base}}/api/customers/{{customerId}}/archive
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{"reason":"Closed for new business"}

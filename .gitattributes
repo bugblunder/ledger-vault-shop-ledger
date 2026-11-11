@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.cmd text eol=crlf
+# Preserve the already-distributed V1 migration exactly, including its CRLF bytes.
+src/main/resources/db/migration/V1__Initial_Schema.sql -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
